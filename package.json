@@ -1,0 +1,14 @@
+{
+  "name": "mindx-agent-lms-odoo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "odoo": "npx tsx odoo-auto-cli/src/index.ts",
+    "crawl-ticket": "npx tsx odoo-auto-cli/src/index.ts crawl-ticket",
+    "reply-ticket": "npx tsx odoo-auto-cli/src/index.ts reply-ticket",
+    "resolve-ticket": "npx tsx odoo-auto-cli/src/index.ts resolve-ticket",
+    "check-assignee": "npx tsx odoo-auto-cli/src/index.ts check-assignee",
+    "note-ticket": "npx tsx odoo-auto-cli/src/index.ts note-ticket",
+    "report": "npx tsx scripts/report.ts"
+  }
+}
