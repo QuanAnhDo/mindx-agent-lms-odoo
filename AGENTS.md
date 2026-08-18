@@ -16,8 +16,8 @@ pnpm report <month> <year> [weekStart] [weekEnd]    # Generate report
 
 **Examples:**
 ```bash
-pnpm report 7 2026          # August 2026, full month
-pnpm report 7 2026 1 2      # August 2026, week 1-2
+pnpm report 8 2026          # August 2026, full month
+pnpm report 8 2026 1 2      # August 2026, week 1-2
 ```
 
 ## CRITICAL RULES

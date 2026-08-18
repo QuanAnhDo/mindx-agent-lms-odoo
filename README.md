@@ -10,6 +10,7 @@ System for managing and reporting LMS tickets from Odoo Helpdesk.
 - **Check assignee**: Check assigned person
 - **Note ticket**: Add internal note
 - **Report**: Generate weekly/monthly reports with detailed statistics
+- **Send Report**: Send reports via Outlook email
 
 ## Installation
 
@@ -32,16 +33,22 @@ pnpm install
 # Copy .env.example to .env
 cp .env.example .env
 
-# Edit .env with your Odoo credentials
+# Edit .env with your Odoo credentials and Microsoft Graph API credentials
 ```
 
 `.env` content:
 
 ```env
+# Odoo
 URL="https://hrm.mindx.edu.vn"
 DB="mindx-crm"
 USER_NAME="your-email"
 API_KEY="your-odoo-api-key"
+
+# Microsoft Graph API (for mail-cli)
+USER_EMAIL_GROUP="your-email@mindx.edu.vn"
+AZURE_CLIENT_ID_GROUP="your-azure-client-id"
+AZURE_TENANT_ID_GROUP="your-azure-tenant-id"
 ```
 
 ### 4. Verify installation
@@ -82,8 +89,25 @@ pnpm report <month> <year>
 pnpm report <month> <year> <weekStart> <weekEnd>
 
 # Examples
-pnpm report 7 2026          # August 2026, full month
-pnpm report 7 2026 1 2      # August 2026, week 1-2
+pnpm report 8 2026          # August 2026, full month
+pnpm report 8 2026 1 2      # August 2026, week 1-2
+```
+
+### Send Report via Email
+
+```bash
+# Send report to recipients
+pnpm send-report -f <report-file> -t <email1,email2>
+
+# Examples
+pnpm send-report -f reports/2026-08/lms-report-week1.md -t anhtq@mindx.com.vn
+pnpm send-report -f reports/2026-08/lms-report-week2.md -t team@mindx.com.vn,manager@mindx.com.vn
+
+# With CC
+pnpm send-report -f reports/2026-08/lms-report-week1.md -t anhtq@mindx.com.vn --cc manager@mindx.com.vn
+
+# Custom subject
+pnpm send-report -f reports/2026-08/lms-report-week1.md -t anhtq@mindx.com.vn --subject "Weekly LMS Report"
 ```
 
 ## Project Structure
@@ -101,6 +125,15 @@ mindx-agent-lms-odoo/
 │   ├── src/
 │   │   ├── index.ts     # CLI entry point
 │   │   └── helpers.ts   # Odoo connection functions
+│   └── package.json
+├── mail-cli/            # Outlook email sender
+│   ├── src/
+│   │   ├── index.ts     # CLI entry point
+│   │   ├── authentication.ts  # Azure Device Code Flow
+│   │   ├── lib/
+│   │   │   └── mail-sender.ts # Microsoft Graph API
+│   │   └── commands/
+│   │       └── send-report.ts # Send report command
 │   └── package.json
 └── scripts/             # Report scripts
     └── report.ts        # Report generator
@@ -151,6 +184,9 @@ Example for August 2026:
 | `DB` | Database name |
 | `USER_NAME` | Username |
 | `API_KEY` | API key |
+| `USER_EMAIL_GROUP` | Outlook email for sending reports |
+| `AZURE_CLIENT_ID_GROUP` | Azure AD App Client ID |
+| `AZURE_TENANT_ID_GROUP` | Azure AD Tenant ID |
 
 ## License
 

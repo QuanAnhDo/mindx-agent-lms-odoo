@@ -10,9 +10,19 @@
     "resolve-ticket": "tsx odoo-auto-cli/src/index.ts resolve-ticket",
     "check-assignee": "tsx odoo-auto-cli/src/index.ts check-assignee",
     "note-ticket": "tsx odoo-auto-cli/src/index.ts note-ticket",
-    "report": "tsx scripts/report.ts"
+    "report": "tsx scripts/report.ts",
+    "mail": "tsx mail-cli/src/index.ts",
+    "send-report": "tsx mail-cli/src/index.ts send-report"
+  },
+  "dependencies": {
+    "@azure/identity": "^4.13.0",
+    "@azure/identity-cache-persistence": "^1.2.0",
+    "@microsoft/microsoft-graph-client": "^3.0.7",
+    "commander": "^14.0.3",
+    "dotenv": "^17.3.1"
   },
   "devDependencies": {
-    "tsx": "^4.0.0"
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
   }
 }

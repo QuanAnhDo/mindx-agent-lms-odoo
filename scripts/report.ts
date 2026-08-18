@@ -14,7 +14,8 @@ interface ReportOptions {
 
 async function main() {
   const args = process.argv.slice(2);
-  const month = parseInt(args[0]) || new Date().getMonth();
+  const monthInput = parseInt(args[0]) || (new Date().getMonth() + 1);
+  const month = monthInput - 1; // Convert 1-indexed to 0-indexed
   const year = parseInt(args[1]) || new Date().getFullYear();
   const weekStart = args[2] ? parseInt(args[2]) : undefined;
   const weekEnd = args[3] ? parseInt(args[3]) : undefined;
@@ -268,7 +269,8 @@ function getDurationBucket(hours: number | null): string {
   if (hours <= 8) return '0h-8h';
   if (hours <= 24) return '8h-24h';
   if (hours <= 48) return '24h-48h';
-  return '>48h';
+  if (hours <= 72) return '48h-72h';
+  return '>72h';
 }
 
 function generateHeader(month: number, year: number, weekName: string): string {
@@ -334,7 +336,7 @@ function generateDurationBuckets(tickets: any[]): string {
   report += `| Time Bucket | Tickets | Rate |\n`;
   report += `|-------------|---------|------|\n`;
   
-  const buckets = ['0h-8h', '8h-24h', '24h-48h', '>48h'];
+  const buckets = ['0h-8h', '8h-24h', '24h-48h', '48h-72h', '>72h'];
   const total = tickets.length;
   
   for (const bucket of buckets) {
