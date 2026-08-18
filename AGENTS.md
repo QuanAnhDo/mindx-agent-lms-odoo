@@ -4,20 +4,20 @@
 
 ```bash
 # Ticket Operations
-npx tsx odoo-auto-cli/src/index.ts crawl-ticket -t <id>           # Fetch ticket info
-npx tsx odoo-auto-cli/src/index.ts reply-ticket -t <id> --template <file>  # Reply to ticket
-npx tsx odoo-auto-cli/src/index.ts resolve-ticket -t <id>         # Mark ticket as solved
-npx tsx odoo-auto-cli/src/index.ts check-assignee -t <id>         # Check ticket assignee
-npx tsx odoo-auto-cli/src/index.ts note-ticket -t <id> -m "msg"   # Add internal note
+pnpm odoo crawl-ticket -t <id>           # Fetch ticket info
+pnpm odoo reply-ticket -t <id> --template <file>  # Reply to ticket
+pnpm odoo resolve-ticket -t <id>         # Mark ticket as solved
+pnpm odoo check-assignee -t <id>         # Check ticket assignee
+pnpm odoo note-ticket -t <id> -m "msg"   # Add internal note
 
 # Reporting
-npx tsx scripts/report.ts <month> <year> [weekStart] [weekEnd]    # Generate report
+pnpm report <month> <year> [weekStart] [weekEnd]    # Generate report
 ```
 
 **Examples:**
 ```bash
-npx tsx scripts/report.ts 7 2026          # August 2026, full month
-npx tsx scripts/report.ts 7 2026 1 2      # August 2026, week 1-2
+pnpm report 7 2026          # August 2026, full month
+pnpm report 7 2026 1 2      # August 2026, week 1-2
 ```
 
 ## CRITICAL RULES

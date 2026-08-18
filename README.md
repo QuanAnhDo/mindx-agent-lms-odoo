@@ -23,7 +23,7 @@ cd mindx-agent-lms-odoo
 ### 2. Install dependencies
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 3. Configure environment
@@ -48,7 +48,7 @@ API_KEY="your-odoo-api-key"
 
 ```bash
 # Test Odoo connection
-npx tsx odoo-auto-cli/src/index.ts crawl-ticket -t 7700
+pnpm odoo crawl-ticket -t 7700
 ```
 
 ## Usage
@@ -57,33 +57,33 @@ npx tsx odoo-auto-cli/src/index.ts crawl-ticket -t 7700
 
 ```bash
 # Crawl ticket
-npx tsx odoo-auto-cli/src/index.ts crawl-ticket -t <ticket_id>
+pnpm odoo crawl-ticket -t <ticket_id>
 
 # Reply to ticket
-npx tsx odoo-auto-cli/src/index.ts reply-ticket -t <ticket_id> --template <file>
+pnpm odoo reply-ticket -t <ticket_id> --template <file>
 
 # Mark ticket as solved
-npx tsx odoo-auto-cli/src/index.ts resolve-ticket -t <ticket_id>
+pnpm odoo resolve-ticket -t <ticket_id>
 
 # Check assignee
-npx tsx odoo-auto-cli/src/index.ts check-assignee -t <ticket_id>
+pnpm odoo check-assignee -t <ticket_id>
 
 # Add internal note
-npx tsx odoo-auto-cli/src/index.ts note-ticket -t <ticket_id> -m "message"
+pnpm odoo note-ticket -t <ticket_id> -m "message"
 ```
 
 ### Reports
 
 ```bash
 # Full month report
-npx tsx scripts/report.ts <month> <year>
+pnpm report <month> <year>
 
 # Weekly report
-npx tsx scripts/report.ts <month> <year> <weekStart> <weekEnd>
+pnpm report <month> <year> <weekStart> <weekEnd>
 
 # Examples
-npx tsx scripts/report.ts 7 2026          # August 2026, full month
-npx tsx scripts/report.ts 7 2026 1 2      # August 2026, week 1-2
+pnpm report 7 2026          # August 2026, full month
+pnpm report 7 2026 1 2      # August 2026, week 1-2
 ```
 
 ## Project Structure
