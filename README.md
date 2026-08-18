@@ -11,36 +11,44 @@ He thong quan ly va bao cao ticket LMS tu Odoo Helpdesk.
 - **Note ticket**: Them ghi chu noi bo
 - **Bao cao**: Tao bao cao theo tuan/thang voi thong ke chi tiet
 
-## Cau truc
-
-```
-mindx-agent-lms-odoo/
-├── .env                 # Bi moi truong (khong commit)
-├── .env.example         # Mau bi moi truong
-├── AGENTS.md            # Huong dan agent
-├── package.json         # Cau hinh package
-├── tsconfig.base.json   # Cau hinh TypeScript
-├── odoo-auto-cli/       # Odoo XML-RPC helpers
-│   └── src/
-│       ├── index.ts     # CLI entry point
-│       └── helpers.ts   # Ham ket noi Odoo
-├── scripts/             # Script bao cao
-│   └── report.ts        # Script tao bao cao
-└── reports/             # Thu muc bao cao
-    └── YYYY-MM/         # Bao cao theo thang
-        └── lms-report-weekN.md
-```
-
 ## Cai dat
 
-```bash
-# Install dependencies
-npm install
+### 1. Clone repository
 
+```bash
+git clone https://github.com/QuanAnhDo/mindx-agent-lms-odoo.git
+cd mindx-agent-lms-odoo
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Cau hinh moi truong
+
+```bash
 # Copy .env.example to .env
 cp .env.example .env
 
-# Edit .env with your Odoo credentials
+# Edit .env voi Odoo credentials
+```
+
+Noi dung `.env`:
+
+```env
+URL="https://hrm.mindx.edu.vn"
+DB="mindx-crm"
+USER_NAME="your-email"
+API_KEY="your-odoo-api-key"
+```
+
+### 4. Kiem tra cai dat
+
+```bash
+# Test ket noi Odoo
+npx tsx odoo-auto-cli/src/index.ts crawl-ticket -t 7700
 ```
 
 ## Su dung
@@ -76,6 +84,26 @@ npx tsx scripts/report.ts <month> <year> <weekStart> <weekEnd>
 # Vi du
 npx tsx scripts/report.ts 7 2026          # Thang 8/2026, ca thang
 npx tsx scripts/report.ts 7 2026 1 2      # Thang 8/2026, tuan 1-2
+```
+
+## Cau truc
+
+```
+mindx-agent-lms-odoo/
+├── .env                 # Bi moi truong (khong commit)
+├── .env.example         # Mau bi moi truong
+├── .gitignore           # Loai file khong commit
+├── AGENTS.md            # Huong dan agent
+├── README.md            # Huong dan su dung
+├── package.json         # Cau hinh package
+├── tsconfig.base.json   # Cau hinh TypeScript
+├── odoo-auto-cli/       # Odoo XML-RPC helpers
+│   ├── src/
+│   │   ├── index.ts     # CLI entry point
+│   │   └── helpers.ts   # Ham ket noi Odoo
+│   └── package.json
+└── scripts/             # Script bao cao
+    └── report.ts        # Script tao bao cao
 ```
 
 ## Dinh dang bao cao
