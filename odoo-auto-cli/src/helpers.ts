@@ -38,7 +38,7 @@ export async function connectOdoo(): Promise<any> {
   });
 
   connection = conn;
-  console.log('Đã kết nối Odoo thành công!');
+  console.log('Connected to Odoo successfully!');
   return conn;
 }
 

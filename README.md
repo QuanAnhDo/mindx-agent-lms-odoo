@@ -1,17 +1,17 @@
 # MindX LMS Odoo Ticket Agent
 
-He thong quan ly va bao cao ticket LMS tu Odoo Helpdesk.
+System for managing and reporting LMS tickets from Odoo Helpdesk.
 
-## Tinh nang
+## Features
 
-- **Crawl ticket**: Lay thong tin ticket tu Odoo
-- **Reply ticket**: Tra loi ticket tren Odoo
-- **Resolve ticket**: Danh dau ticket da xu ly
-- **Check assignee**: Kiem tra nguoi duoc phan cong
-- **Note ticket**: Them ghi chu noi bo
-- **Bao cao**: Tao bao cao theo tuan/thang voi thong ke chi tiet
+- **Crawl ticket**: Fetch ticket information from Odoo
+- **Reply ticket**: Reply to tickets on Odoo
+- **Resolve ticket**: Mark ticket as solved
+- **Check assignee**: Check assigned person
+- **Note ticket**: Add internal note
+- **Report**: Generate weekly/monthly reports with detailed statistics
 
-## Cai dat
+## Installation
 
 ### 1. Clone repository
 
@@ -26,16 +26,16 @@ cd mindx-agent-lms-odoo
 npm install
 ```
 
-### 3. Cau hinh moi truong
+### 3. Configure environment
 
 ```bash
 # Copy .env.example to .env
 cp .env.example .env
 
-# Edit .env voi Odoo credentials
+# Edit .env with your Odoo credentials
 ```
 
-Noi dung `.env`:
+`.env` content:
 
 ```env
 URL="https://hrm.mindx.edu.vn"
@@ -44,14 +44,14 @@ USER_NAME="your-email"
 API_KEY="your-odoo-api-key"
 ```
 
-### 4. Kiem tra cai dat
+### 4. Verify installation
 
 ```bash
-# Test ket noi Odoo
+# Test Odoo connection
 npx tsx odoo-auto-cli/src/index.ts crawl-ticket -t 7700
 ```
 
-## Su dung
+## Usage
 
 ### Ticket Operations
 
@@ -72,81 +72,81 @@ npx tsx odoo-auto-cli/src/index.ts check-assignee -t <ticket_id>
 npx tsx odoo-auto-cli/src/index.ts note-ticket -t <ticket_id> -m "message"
 ```
 
-### Bao cao
+### Reports
 
 ```bash
-# Bao cao ca thang
+# Full month report
 npx tsx scripts/report.ts <month> <year>
 
-# Bao cao theo tuan
+# Weekly report
 npx tsx scripts/report.ts <month> <year> <weekStart> <weekEnd>
 
-# Vi du
-npx tsx scripts/report.ts 7 2026          # Thang 8/2026, ca thang
-npx tsx scripts/report.ts 7 2026 1 2      # Thang 8/2026, tuan 1-2
+# Examples
+npx tsx scripts/report.ts 7 2026          # August 2026, full month
+npx tsx scripts/report.ts 7 2026 1 2      # August 2026, week 1-2
 ```
 
-## Cau truc
+## Project Structure
 
 ```
 mindx-agent-lms-odoo/
-├── .env                 # Bi moi truong (khong commit)
-├── .env.example         # Mau bi moi truong
-├── .gitignore           # Loai file khong commit
-├── AGENTS.md            # Huong dan agent
-├── README.md            # Huong dan su dung
-├── package.json         # Cau hinh package
-├── tsconfig.base.json   # Cau hinh TypeScript
+├── .env                 # Environment variables (not committed)
+├── .env.example         # Environment template
+├── .gitignore           # Files to ignore
+├── AGENTS.md            # Agent instructions
+├── README.md            # This file
+├── package.json         # Package configuration
+├── tsconfig.base.json   # TypeScript configuration
 ├── odoo-auto-cli/       # Odoo XML-RPC helpers
 │   ├── src/
 │   │   ├── index.ts     # CLI entry point
-│   │   └── helpers.ts   # Ham ket noi Odoo
+│   │   └── helpers.ts   # Odoo connection functions
 │   └── package.json
-└── scripts/             # Script bao cao
-    └── report.ts        # Script tao bao cao
+└── scripts/             # Report scripts
+    └── report.ts        # Report generator
 ```
 
-## Dinh dang bao cao
+## Report Format
 
-Bao cao duoc luu trong`reports/YYYY-MM/lms-report-weekN.md` voi cau truc:
+Reports are saved in `reports/YYYY-MM/lms-report-weekN.md` with the following structure:
 
-- **Tong quan**: So luong ticket mo/dong
-- **Thong ke theo Tags**: Phan tich theo tung tag (sap xep theo so luong)
-- **Phan thoi gian xu ly**: Khung gio 0h-8h, 8h-24h, 24h-48h, >48h
-- **Dang xu ly**: Danh sach ticket dang xu ly
-- **Da dong**: Danh sach ticket da dong
-- **Ket luan**: Tong ket tuan
+- **Summary**: Open/closed ticket counts
+- **Tag Statistics**: Analysis by tag (sorted by count)
+- **Processing Time**: Time buckets 0h-8h, 8h-24h, 24h-48h, >48h
+- **In Progress**: List of open tickets
+- **Closed**: List of closed tickets
+- **Conclusion**: Weekly summary
 
-## Lich tuan
+## Week Schedule
 
-- **Tuan bat dau**: Thu 7 (Saturday)
-- **Tuan ket thuc**: Thu 6 (Friday)
-- **Tinh dong theo thang**: Mo thang bat dau lai tu 1
+- **Week starts**: Saturday
+- **Week ends**: Friday
+- **Monthly reset**: Each month starts fresh from day 1
 
-Vi du thang 8/2026:
-- Tuan 1: 1/8 - 7/8
-- Tuan 2: 8/8 - 14/8
-- Tuan 3: 15/8 - 21/8
-- Tuan 4: 22/8 - 28/8
-- Tuan 5: 29/8 - 31/8
+Example for August 2026:
+- Week 1: Aug 1 - Aug 7
+- Week 2: Aug 8 - Aug 14
+- Week 3: Aug 15 - Aug 21
+- Week 4: Aug 22 - Aug 28
+- Week 5: Aug 29 - Aug 31
 
 ## Odoo Stages
 
-**Team LMS (ID: 10)**
+**LMS Team (ID: 10)**
 
-| Stage | Trang thai |
-|-------|------------|
-| New | Mo |
-| In Progress | Mo |
-| On Hold | Mo |
-| Solved | Dong |
-| Closed | Dong |
-| Cancelled | Dong |
+| Stage | Status |
+|-------|--------|
+| New | Open |
+| In Progress | Open |
+| On Hold | Open |
+| Solved | Closed |
+| Closed | Closed |
+| Cancelled | Closed |
 
-## Moi truong
+## Environment Variables
 
-| Bien | Mo ta |
-|------|-------|
+| Variable | Description |
+|----------|-------------|
 | `URL` | Odoo URL (https://hrm.mindx.edu.vn) |
 | `DB` | Database name |
 | `USER_NAME` | Username |

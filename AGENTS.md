@@ -4,7 +4,7 @@
 
 ```bash
 # Ticket Operations
-npx tsx odoo-auto-cli/src/index.ts crawl-ticket -t <id>           # Crawl ticket info
+npx tsx odoo-auto-cli/src/index.ts crawl-ticket -t <id>           # Fetch ticket info
 npx tsx odoo-auto-cli/src/index.ts reply-ticket -t <id> --template <file>  # Reply to ticket
 npx tsx odoo-auto-cli/src/index.ts resolve-ticket -t <id>         # Mark ticket as solved
 npx tsx odoo-auto-cli/src/index.ts check-assignee -t <id>         # Check ticket assignee
@@ -16,16 +16,16 @@ npx tsx scripts/report.ts <month> <year> [weekStart] [weekEnd]    # Generate rep
 
 **Examples:**
 ```bash
-npx tsx scripts/report.ts 7 2026          # Tháng 8/2026, cả tháng
-npx tsx scripts/report.ts 7 2026 1 2      # Tháng 8/2026, tuần 1-2
+npx tsx scripts/report.ts 7 2026          # August 2026, full month
+npx tsx scripts/report.ts 7 2026 1 2      # August 2026, week 1-2
 ```
 
 ## CRITICAL RULES
 
-1. **LUÔN lấy dữ liệu từ Odoo** - KHÔNG bao giờ tự tạo dữ liệu
-2. **Xác thực team_id** - Chỉ lấy ticket team LMS (ID=10)
-3. **Không hardcode** - Ticket ID, tên, tags đều phải lấy từ Odoo
-4. **Lịch tuần** - Tuần = T7 đến T6 (tính động theo lịch thực tế)
+1. **ALWAYS fetch data from Odoo** - NEVER generate fake data
+2. **Validate team_id** - Only fetch LMS team tickets (ID=10)
+3. **No hardcoding** - Ticket IDs, names, tags must come from Odoo
+4. **Week schedule** - Week = Saturday to Friday (dynamic per calendar)
 
 ## Architecture
 

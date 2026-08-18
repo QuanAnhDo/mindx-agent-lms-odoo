@@ -19,7 +19,7 @@ async function main() {
   const weekStart = args[2] ? parseInt(args[2]) : undefined;
   const weekEnd = args[3] ? parseInt(args[3]) : undefined;
 
-  console.log(`\nBÁO CÁO TICKET LMS - Tháng ${month + 1}/${year}\n`);
+  console.log(`\nLMS TICKET REPORT - Month ${month + 1}/${year}\n`);
   
   await connectOdoo();
   
@@ -72,7 +72,7 @@ async function main() {
     // Save to separate file
     const filename = `${monthFolder}/lms-report-week${weekNum}.md`;
     fs.writeFileSync(filename, report, 'utf-8');
-    console.log(`Tuần ${weekNum} saved: ${filename}`);
+    console.log(`Week ${weekNum} saved: ${filename}`);
   }
 }
 
@@ -264,7 +264,7 @@ function calcDuration(ticket: any): number | null {
 }
 
 function getDurationBucket(hours: number | null): string {
-  if (hours === null) return 'Chưa đóng';
+  if (hours === null) return 'Not closed';
   if (hours <= 8) return '0h-8h';
   if (hours <= 24) return '8h-24h';
   if (hours <= 48) return '24h-48h';
@@ -272,11 +272,11 @@ function getDurationBucket(hours: number | null): string {
 }
 
 function generateHeader(month: number, year: number, weekName: string): string {
-  let report = '# BÁO CÁO TICKET LMS\n\n';
-  report += `> **Tháng**: ${month + 1}/${year}\n`;
-  report += `> **Tuần**: ${weekName}\n`;
-  report += `> **Bộ phận**: LMS (team_id = 10)\n`;
-  report += `> **Ngày tạo**: ${new Date().toLocaleDateString('vi-VN')}\n\n`;
+  let report = '# LMS TICKET REPORT\n\n';
+  report += `> **Month**: ${month + 1}/${year}\n`;
+  report += `> **Week**: ${weekName}\n`;
+  report += `> **Team**: LMS (team_id = 10)\n`;
+  report += `> **Generated**: ${new Date().toLocaleDateString('en-US')}\n\n`;
   return report;
 }
 
@@ -286,9 +286,9 @@ function generateWeekSummary(tickets: any[]): string {
   const total = tickets.length;
   const percent = total > 0 ? Math.round(closedCount / total * 100) : 0;
   
-  let report = '## TỔNG QUAN\n\n';
-  report += `| Mở | Đóng | Tổng | Tỷ lệ đóng |\n`;
-  report += `|-----|------|------|------------|\n`;
+  let report = '## SUMMARY\n\n';
+  report += `| Open | Closed | Total | Close Rate |\n`;
+  report += `|------|--------|-------|------------|\n`;
   report += `| ${openCount} | ${closedCount} | ${total} | ${percent}% |\n\n`;
   return report;
 }
@@ -300,7 +300,7 @@ function generateTagStats(tickets: any[], tagMap: Record<number, string>): strin
   for (const ticket of tickets) {
     const tagNames = ticket.tag_ids 
       ? ticket.tag_ids.map((id: number) => tagMap[id] || `Tag ${id}`)
-      : ['Không có tag'];
+      : ['No tag'];
     
     for (const tagName of tagNames) {
       if (!tagCounts[tagName]) {
@@ -316,9 +316,9 @@ function generateTagStats(tickets: any[], tagMap: Record<number, string>): strin
   const sortedTags = Object.entries(tagCounts)
     .sort(([, a], [, b]) => b.count - a.count);
   
-  let report = '## THỐNG KÊ THEO TAGS\n\n';
-  report += `| Tag | Số lượng | Mở | Đóng | Tỷ lệ đóng |\n`;
-  report += `|-----|----------|-----|------|------------|\n`;
+  let report = '## TAG STATISTICS\n\n';
+  report += `| Tag | Count | Open | Closed | Close Rate |\n`;
+  report += `|-----|-------|------|--------|------------|\n`;
   
   for (const [tagName, stats] of sortedTags) {
     const percent = stats.count > 0 ? Math.round(stats.closed / stats.count * 100) : 0;
@@ -330,9 +330,9 @@ function generateTagStats(tickets: any[], tagMap: Record<number, string>): strin
 }
 
 function generateDurationBuckets(tickets: any[]): string {
-  let report = '## PHÂN TÍCH THỜI GIAN XỬ LÝ\n\n';
-  report += `| Khung giờ | Số ticket | Tỷ lệ |\n`;
-  report += `|-----------|-----------|-------|\n`;
+  let report = '## PROCESSING TIME ANALYSIS\n\n';
+  report += `| Time Bucket | Tickets | Rate |\n`;
+  report += `|-------------|---------|------|\n`;
   
   const buckets = ['0h-8h', '8h-24h', '24h-48h', '>48h'];
   const total = tickets.length;
@@ -354,34 +354,34 @@ function generateWeekDetail(tickets: any[], tagMap: Record<number, string>): str
   let report = '';
   
   // Open tickets
-  report += `## ĐANG XỬ LÝ (${openTickets.length})\n\n`;
+  report += `## IN PROGRESS (${openTickets.length})\n\n`;
   if (openTickets.length > 0) {
-    report += `| ID | Ngày tạo | Stage | Thời gian | Tên ticket |\n`;
-    report += `|----|----------|-------|-----------|------------|\n`;
+    report += `| ID | Created | Stage | Duration | Ticket Name |\n`;
+    report += `|-----|---------|-------|----------|-------------|\n`;
     for (const t of openTickets) {
-      const date = new Date(t.create_date).toLocaleDateString('vi-VN');
+      const date = new Date(t.create_date).toLocaleDateString('en-US');
       const duration = calcDuration(t);
       const durationStr = duration !== null ? `${Math.round(duration)}h` : 'N/A';
       report += `| ${t.id} | ${date} | ${getStageName(t)} | ${durationStr} | ${t.name} |\n`;
     }
   } else {
-    report += 'Không có ticket nào.\n';
+    report += 'No tickets.\n';
   }
   report += '\n';
   
   // Closed tickets
-  report += `## ĐÃ ĐÓNG (${closedTickets.length})\n\n`;
+  report += `## CLOSED (${closedTickets.length})\n\n`;
   if (closedTickets.length > 0) {
-    report += `| ID | Ngày tạo | Stage | Thời gian | Tên ticket |\n`;
-    report += `|----|----------|-------|-----------|------------|\n`;
+    report += `| ID | Created | Stage | Duration | Ticket Name |\n`;
+    report += `|-----|---------|-------|----------|-------------|\n`;
     for (const t of closedTickets) {
-      const date = new Date(t.create_date).toLocaleDateString('vi-VN');
+      const date = new Date(t.create_date).toLocaleDateString('en-US');
       const duration = calcDuration(t);
       const durationStr = duration !== null ? `${Math.round(duration)}h` : 'N/A';
       report += `| ${t.id} | ${date} | ${getStageName(t)} | ${durationStr} | ${t.name} |\n`;
     }
   } else {
-    report += 'Không có ticket nào.\n';
+    report += 'No tickets.\n';
   }
   report += '\n';
   
@@ -389,19 +389,19 @@ function generateWeekDetail(tickets: any[], tagMap: Record<number, string>): str
 }
 
 function generateConclusion(tickets: any[], weekName: string): string {
-  let report = '---\n\n## KẾT LUẬN\n\n';
+  let report = '---\n\n## CONCLUSION\n\n';
   
   const openCount = tickets.filter(isOpen).length;
   const closedCount = tickets.filter(isClosed).length;
   const percent = Math.round(closedCount / tickets.length * 100);
   
-  report += `- **${weekName}**: ${closedCount}/${tickets.length} đã đóng (${percent}%)`;
-  if (openCount > 0) report += ` | Còn ${openCount} ticket đang xử lý`;
+  report += `- **${weekName}**: ${closedCount}/${tickets.length} closed (${percent}%)`;
+  if (openCount > 0) report += ` | ${openCount} tickets in progress`;
   report += '\n\n';
   
-  report += `> **Lưu ý**: Thời gian xử lý = từ lúc tạo ticket đến lúc bắt đầu xử lý\n`;
-  report += `> - Ticket đã đóng: tính từ tạo đến đóng\n`;
-  report += `> - Ticket đang xử lý: tính từ tạo đến hiện tại\n`;
+  report += `> **Note**: Processing time = from ticket creation to first response\n`;
+  report += `> - Closed tickets: from creation to closure\n`;
+  report += `> - Open tickets: from creation to now\n`;
   
   return report;
 }
