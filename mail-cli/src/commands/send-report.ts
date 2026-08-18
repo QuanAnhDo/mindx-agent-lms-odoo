@@ -159,8 +159,12 @@ function buildTable(rows: string[][]): string {
   if (rows.length === 0) return '';
 
   const numCols = rows[0].length;
-  // Ticket Name is usually the last column - give it more width
-  const isDetailTable = numCols >= 5;
+  const header = rows[0];
+  
+  // Detect table type by header content
+  const isSummaryTable = header.some(h => h.includes('Metric') || h.includes('This Week'));
+  const isTagTable = header.some(h => h.includes('Tag') && header.includes('Trend'));
+  const isDetailTable = header.some(h => h.includes('ID') && h.includes('Ticket Name'));
 
   let table = `<table style="width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 13px; table-layout: fixed; word-wrap: break-word; overflow-wrap: break-word;">`;
   
@@ -175,6 +179,14 @@ function buildTable(rows: string[][]): string {
       else if (c === 2) width = 'width: 70px;';    // Stage
       else if (c === 3) width = 'width: 50px;';    // Duration
       else width = 'width: auto;';                  // Ticket Name (rest)
+    } else if (isSummaryTable) {
+      if (c === 0) width = 'width: 100px;';       // Metric
+      else if (c === numCols - 1) width = 'width: 80px;'; // Trend
+      else width = 'width: auto;';
+    } else if (isTagTable) {
+      if (c === 0) width = 'width: auto;';         // Tag name
+      else if (c === numCols - 1) width = 'width: 80px;'; // Trend
+      else width = 'width: auto;';
     }
     table += `<th style="padding: 10px 6px; text-align: left; font-weight: 600; ${width}">${processInlineFormatting(cell)}</th>`;
   }
@@ -195,11 +207,21 @@ function buildTable(rows: string[][]): string {
         else if (c === 2) cellStyle += ' width: 70px;';    // Stage
         else if (c === 3) cellStyle += ' width: 50px;';    // Duration
         else cellStyle += ' width: auto;';                  // Ticket Name
+      } else if (isSummaryTable || isTagTable) {
+        if (c === numCols - 1) cellStyle += ' width: 80px;'; // Trend column
       }
       if (cell === 'Open' || cell.includes('In Progress') || cell.includes('On Hold')) {
         cellStyle += ' color: #e74c3c; font-weight: 600;';
       } else if (cell === 'Closed' || cell.includes('Solved') || cell.includes('Cancelled')) {
         cellStyle += ' color: #27ae60; font-weight: 600;';
+      }
+      // Style trend arrows
+      if (cell.startsWith('↑')) {
+        cellStyle += ' color: #e74c3c; font-weight: 600;';
+      } else if (cell.startsWith('↓')) {
+        cellStyle += ' color: #27ae60; font-weight: 600;';
+      } else if (cell.startsWith('→')) {
+        cellStyle += ' color: #7f8c8d; font-weight: 600;';
       }
       table += `<td style="${cellStyle}">${processInlineFormatting(cell)}</td>`;
     }

@@ -50,16 +50,30 @@ async function main() {
     : weekNames;
 
   // Generate separate file for each week
-  for (const weekName of weeksToShow) {
+  for (let i = 0; i < weeksToShow.length; i++) {
+    const weekName = weeksToShow[i];
     const weekTickets = weeks[weekName] || [];
     if (weekTickets.length === 0) continue;
     
     // Extract week number from name
     const weekNum = weekName.match(/Tuần (\d+)/)?.[1] || '0';
     
+    // Find previous week (the week before this one in the array)
+    let prevTickets: any[] | null = null;
+    let prevTagMap: Record<number, string> | null = null;
+    if (i > 0) {
+      const prevWeekName = weeksToShow[i - 1];
+      prevTickets = weeks[prevWeekName] || [];
+      if (prevTickets.length > 0) {
+        prevTagMap = tagMap; // Use same tag map since it's same month
+      } else {
+        prevTickets = null;
+      }
+    }
+    
     let report = generateHeader(month, year, weekName);
-    report += generateWeekSummary(weekTickets);
-    report += generateTagStats(weekTickets, tagMap);
+    report += generateWeekSummary(weekTickets, prevTickets);
+    report += generateTagStats(weekTickets, tagMap, prevTickets, prevTagMap);
     report += generateDurationBuckets(weekTickets);
     report += generateWeekDetail(weekTickets, tagMap);
     report += generateConclusion(weekTickets, weekName);
@@ -273,6 +287,18 @@ function getDurationBucket(hours: number | null): string {
   return '>72h';
 }
 
+function calcTrend(current: number, previous: number): string {
+  if (previous === 0) {
+    if (current === 0) return '→0%';
+    return '↑NEW';
+  }
+  const change = ((current - previous) / previous) * 100;
+  const rounded = Math.round(change);
+  if (rounded > 0) return `↑${rounded}%`;
+  if (rounded < 0) return `↓${Math.abs(rounded)}%`;
+  return '→0%';
+}
+
 function generateHeader(month: number, year: number, weekName: string): string {
   let report = '# LMS TICKET REPORT\n\n';
   report += `> **Month**: ${month + 1}/${year}\n`;
@@ -282,21 +308,39 @@ function generateHeader(month: number, year: number, weekName: string): string {
   return report;
 }
 
-function generateWeekSummary(tickets: any[]): string {
+function generateWeekSummary(tickets: any[], prevTickets: any[] | null): string {
   const openCount = tickets.filter(isOpen).length;
   const closedCount = tickets.filter(isClosed).length;
   const total = tickets.length;
   const percent = total > 0 ? Math.round(closedCount / total * 100) : 0;
   
   let report = '## SUMMARY\n\n';
-  report += `| Open | Closed | Total | Close Rate |\n`;
-  report += `|------|--------|-------|------------|\n`;
-  report += `| ${openCount} | ${closedCount} | ${total} | ${percent}% |\n\n`;
+  report += `| Metric | This Week | Last Week | Trend |\n`;
+  report += `|--------|-----------|-----------|-------|\n`;
+  
+  if (prevTickets) {
+    const prevOpen = prevTickets.filter(isOpen).length;
+    const prevClosed = prevTickets.filter(isClosed).length;
+    const prevTotal = prevTickets.length;
+    const prevPercent = prevTotal > 0 ? Math.round(prevClosed / prevTotal * 100) : 0;
+    
+    report += `| Open | ${openCount} | ${prevOpen} | ${calcTrend(openCount, prevOpen)} |\n`;
+    report += `| Closed | ${closedCount} | ${prevClosed} | ${calcTrend(closedCount, prevClosed)} |\n`;
+    report += `| Total | ${total} | ${prevTotal} | ${calcTrend(total, prevTotal)} |\n`;
+    report += `| Close Rate | ${percent}% | ${prevPercent}% | ${calcTrend(percent, prevPercent)} |\n`;
+  } else {
+    report += `| Open | ${openCount} | - | - |\n`;
+    report += `| Closed | ${closedCount} | - | - |\n`;
+    report += `| Total | ${total} | - | - |\n`;
+    report += `| Close Rate | ${percent}% | - | - |\n`;
+  }
+  
+  report += '\n';
   return report;
 }
 
-function generateTagStats(tickets: any[], tagMap: Record<number, string>): string {
-  // Count tickets per tag
+function generateTagStats(tickets: any[], tagMap: Record<number, string>, prevTickets: any[] | null, prevTagMap: Record<number, string> | null): string {
+  // Count tickets per tag for current week
   const tagCounts: Record<string, { count: number, open: number, closed: number }> = {};
   
   for (const ticket of tickets) {
@@ -314,17 +358,33 @@ function generateTagStats(tickets: any[], tagMap: Record<number, string>): strin
     }
   }
   
+  // Count tickets per tag for previous week
+  const prevTagCounts: Record<string, number> = {};
+  if (prevTickets && prevTagMap) {
+    for (const ticket of prevTickets) {
+      const tagNames = ticket.tag_ids 
+        ? ticket.tag_ids.map((id: number) => prevTagMap[id] || `Tag ${id}`)
+        : ['No tag'];
+      
+      for (const tagName of tagNames) {
+        prevTagCounts[tagName] = (prevTagCounts[tagName] || 0) + 1;
+      }
+    }
+  }
+  
   // Sort by count (high to low)
   const sortedTags = Object.entries(tagCounts)
     .sort(([, a], [, b]) => b.count - a.count);
   
   let report = '## TAG STATISTICS\n\n';
-  report += `| Tag | Count | Open | Closed | Close Rate |\n`;
-  report += `|-----|-------|------|--------|------------|\n`;
+  report += `| Tag | Count | Open | Closed | Close Rate | Trend |\n`;
+  report += `|-----|-------|------|--------|------------|-------|\n`;
   
   for (const [tagName, stats] of sortedTags) {
     const percent = stats.count > 0 ? Math.round(stats.closed / stats.count * 100) : 0;
-    report += `| ${tagName} | ${stats.count} | ${stats.open} | ${stats.closed} | ${percent}% |\n`;
+    const prevCount = prevTagCounts[tagName] || 0;
+    const trend = prevTickets ? calcTrend(stats.count, prevCount) : '-';
+    report += `| ${tagName} | ${stats.count} | ${stats.open} | ${stats.closed} | ${percent}% | ${trend} |\n`;
   }
   
   report += '\n';

@@ -7,38 +7,41 @@
 
 ## SUMMARY
 
-| Open | Closed | Total | Close Rate |
-|------|--------|-------|------------|
-| 10 | 56 | 66 | 85% |
+| Metric | This Week | Last Week | Trend |
+|--------|-----------|-----------|-------|
+| Open | 10 | 1 | ↑900% |
+| Closed | 56 | 70 | ↓20% |
+| Total | 66 | 71 | ↓7% |
+| Close Rate | 85% | 99% | ↓14% |
 
 ## TAG STATISTICS
 
-| Tag | Count | Open | Closed | Close Rate |
-|-----|-------|------|--------|------------|
-| enroll HV | 20 | 3 | 17 | 85% |
-| LMS | 8 | 1 | 7 | 88% |
-| Tích Uncomplete | 7 | 1 | 6 | 86% |
-| Không tạo được phiếu dropout | 4 | 1 | 3 | 75% |
-| Check lỗi điểm danh/Comment | 3 | 0 | 3 | 100% |
-| Sai tên học viên | 2 | 1 | 1 | 50% |
-| Lỗi duyệt phiếu bảo lưu/dropout | 2 | 1 | 1 | 50% |
-| Lỗi bài tập Denisse | 2 | 0 | 2 | 100% |
-| Chưa chọn version bài tập cho lớp | 2 | 1 | 1 | 50% |
-| Cập nhật thông tin HV | 2 | 0 | 2 | 100% |
-| Trạng thái học viên | 2 | 0 | 2 | 100% |
-| Transfer HV | 2 | 0 | 2 | 100% |
-| Tích complete | 2 | 0 | 2 | 100% |
-| không nhận xét được HV trên LMS | 1 | 0 | 1 | 100% |
-| Tạo/Khóa/Mở lại tài khoản | 1 | 1 | 0 | 0% |
-| sửa lại lịch học của lớp | 1 | 0 | 1 | 100% |
-| Thêm SĐT bổ sung trên LMS | 1 | 0 | 1 | 100% |
-| Điểm danh bù | 1 | 0 | 1 | 100% |
-| Kiểm tra thông tin GV | 1 | 0 | 1 | 100% |
-| Sửa tên tài khoản | 1 | 0 | 1 | 100% |
-| Lỗi checkpoint | 1 | 0 | 1 | 100% |
-| Phân quyền/Role | 1 | 0 | 1 | 100% |
-| HV không hiển thị trong phần chấm bài | 1 | 0 | 1 | 100% |
-| Gửi mật khẩu cho PHHS | 1 | 0 | 1 | 100% |
+| Tag | Count | Open | Closed | Close Rate | Trend |
+|-----|-------|------|--------|------------|-------|
+| enroll HV | 20 | 3 | 17 | 85% | ↑5% |
+| LMS | 8 | 1 | 7 | 88% | ↓78% |
+| Tích Uncomplete | 7 | 1 | 6 | 86% | →0% |
+| Không tạo được phiếu dropout | 4 | 1 | 3 | 75% | →0% |
+| Check lỗi điểm danh/Comment | 3 | 0 | 3 | 100% | →0% |
+| Sai tên học viên | 2 | 1 | 1 | 50% | ↓33% |
+| Lỗi duyệt phiếu bảo lưu/dropout | 2 | 1 | 1 | 50% | ↑100% |
+| Lỗi bài tập Denisse | 2 | 0 | 2 | 100% | ↑NEW |
+| Chưa chọn version bài tập cho lớp | 2 | 1 | 1 | 50% | ↑NEW |
+| Cập nhật thông tin HV | 2 | 0 | 2 | 100% | ↑100% |
+| Trạng thái học viên | 2 | 0 | 2 | 100% | ↑100% |
+| Transfer HV | 2 | 0 | 2 | 100% | ↑NEW |
+| Tích complete | 2 | 0 | 2 | 100% | ↑NEW |
+| không nhận xét được HV trên LMS | 1 | 0 | 1 | 100% | ↑NEW |
+| Tạo/Khóa/Mở lại tài khoản | 1 | 1 | 0 | 0% | ↑NEW |
+| sửa lại lịch học của lớp | 1 | 0 | 1 | 100% | ↑NEW |
+| Thêm SĐT bổ sung trên LMS | 1 | 0 | 1 | 100% | ↓50% |
+| Điểm danh bù | 1 | 0 | 1 | 100% | ↑NEW |
+| Kiểm tra thông tin GV | 1 | 0 | 1 | 100% | ↑NEW |
+| Sửa tên tài khoản | 1 | 0 | 1 | 100% | →0% |
+| Lỗi checkpoint | 1 | 0 | 1 | 100% | ↑NEW |
+| Phân quyền/Role | 1 | 0 | 1 | 100% | ↓75% |
+| HV không hiển thị trong phần chấm bài | 1 | 0 | 1 | 100% | ↑NEW |
+| Gửi mật khẩu cho PHHS | 1 | 0 | 1 | 100% | ↑NEW |
 
 ## PROCESSING TIME ANALYSIS
 
@@ -54,16 +57,16 @@
 
 | ID | Created | Stage | Duration | Ticket Name |
 |-----|---------|-------|----------|-------------|
-| 7728 | 8/14/2026 | In Progress | 101h | Lỗi không enroll được HV vào lớp |
-| 7725 | 8/14/2026 | In Progress | 102h | KHÔNG ENROLL ĐƯỢC HỌC VIÊN |
-| 7724 | 8/14/2026 | In Progress | 103h | ONL COD | HỖ TRỢ MỞ QUYỀN DUYỆT EXTRA BẢO LƯU CHO CM |
-| 7699 | 8/13/2026 | In Progress | 125h | không tạo được phiếu bảo lưu |
-| 7687 | 8/13/2026 | In Progress | 127h | Leader không tạo được tài khoản cho GV trên lms |
-| 7661 | 8/13/2026 | In Progress | 132h | BU DA - Nhờ hỗ trợ kiểm tra phần bài tập trên LMS – DA-XART-GAB01 |
-| 7651 | 8/12/2026 | In Progress | 149h | LỖI ENROLL HỌC VIÊN  |
-| 7636 | 8/12/2026 | In Progress | 153h | GIÁO VIÊN KHÔNG TRUY CẬP ĐƯỢC TAB CLASS TRONG LMS |
-| 7614 | 8/11/2026 | In Progress | 171h | Lỗi tick uncomplete cho học viên |
-| 7603 | 8/11/2026 | In Progress | 175h | BN-ROB-PREB22 |
+| 7728 | 8/14/2026 | In Progress | 103h | Lỗi không enroll được HV vào lớp |
+| 7725 | 8/14/2026 | In Progress | 104h | KHÔNG ENROLL ĐƯỢC HỌC VIÊN |
+| 7724 | 8/14/2026 | In Progress | 105h | ONL COD | HỖ TRỢ MỞ QUYỀN DUYỆT EXTRA BẢO LƯU CHO CM |
+| 7699 | 8/13/2026 | In Progress | 127h | không tạo được phiếu bảo lưu |
+| 7687 | 8/13/2026 | In Progress | 129h | Leader không tạo được tài khoản cho GV trên lms |
+| 7661 | 8/13/2026 | In Progress | 134h | BU DA - Nhờ hỗ trợ kiểm tra phần bài tập trên LMS – DA-XART-GAB01 |
+| 7651 | 8/12/2026 | In Progress | 151h | LỖI ENROLL HỌC VIÊN  |
+| 7636 | 8/12/2026 | In Progress | 155h | GIÁO VIÊN KHÔNG TRUY CẬP ĐƯỢC TAB CLASS TRONG LMS |
+| 7614 | 8/11/2026 | In Progress | 172h | Lỗi tick uncomplete cho học viên |
+| 7603 | 8/11/2026 | In Progress | 177h | BN-ROB-PREB22 |
 
 ## CLOSED (56)
 
