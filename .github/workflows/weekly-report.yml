@@ -76,12 +76,10 @@ jobs:
           WEEK_NUM=$(basename "$LATEST_REPORT" | grep -oP 'week\K[0-9]+')
           echo "week_num=$WEEK_NUM" >> $GITHUB_OUTPUT
       
-      - name: Send report via email
+      - name: Send report via Gmail
         env:
-          USER_EMAIL_GROUP: ${{ secrets.USER_EMAIL_GROUP }}
-          AZURE_CLIENT_ID_GROUP: ${{ secrets.AZURE_CLIENT_ID_GROUP }}
-          AZURE_TENANT_ID_GROUP: ${{ secrets.AZURE_TENANT_ID_GROUP }}
-          AZURE_CLIENT_SECRET_GROUP: ${{ secrets.AZURE_CLIENT_SECRET_GROUP }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           URL: ${{ secrets.URL }}
           DB: ${{ secrets.DB }}
           USER_NAME: ${{ secrets.USER_NAME }}
@@ -98,7 +96,7 @@ jobs:
           # Send to your email
           npx tsx mail-cli/src/index.ts send-report \
             -f "$REPORT_FILE" \
-            -t "${{ secrets.USER_EMAIL_GROUP }}" \
+            -t "quanda@mindx.com.vn" \
             -subject "LMS Report - Week $WEEK_NUM ($MONTH/$YEAR)"
       
       - name: Upload report as artifact

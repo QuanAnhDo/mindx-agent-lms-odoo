@@ -1,10 +1,9 @@
 import { Command } from "commander";
-import { Client } from "@microsoft/microsoft-graph-client";
 import * as fs from "fs";
 import * as path from "path";
 import { sendMail } from "../lib/mail-sender.js";
 
-export const register = (program: Command, client: Client) => {
+export const register = (program: Command) => {
   program
     .command("send-report")
     .description("Send LMS ticket report via email")
@@ -30,7 +29,7 @@ export const register = (program: Command, client: Client) => {
         // Convert markdown to HTML
         const htmlContent = convertMarkdownToHtml(reportContent, filename);
 
-        await sendMail(client, {
+        await sendMail({
           to: recipients,
           subject,
           htmlContent,
