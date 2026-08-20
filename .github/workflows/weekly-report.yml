@@ -96,7 +96,7 @@ jobs:
           # Send to your email
           npx tsx mail-cli/src/index.ts send-report \
             -f "$REPORT_FILE" \
-            -t "quanda@mindx.com.vn" \
+            -t "quandoanh242@gmail.com" \
             --subject "LMS Report - Week $WEEK_NUM ($MONTH/$YEAR)"
       
       - name: Upload report as artifact
