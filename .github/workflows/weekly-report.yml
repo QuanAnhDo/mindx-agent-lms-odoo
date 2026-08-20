@@ -1,0 +1,97 @@
+name: Weekly LMS Report
+
+on:
+  schedule:
+    # Every Friday at 18:30 Vietnam time (11:30 UTC)
+    - cron: '30 11 * * 5'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  send-report:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+      
+      - name: Get current week info
+        id: week
+        run: |
+          # Get current date in Vietnam time (UTC+7)
+          CURRENT_DATE=$(TZ='Asia/Ho_Chi_Minh' date +'%Y-%m-%d')
+          YEAR=$(TZ='Asia/Ho_Chi_Minh' date +'%Y')
+          MONTH=$(TZ='Asia/Ho_Chi_Minh' date +'%m')
+          DAY=$(TZ='Asia/Ho_Chi_Minh' date +'%d')
+          
+          # Calculate week number (Saturday-Friday calendar)
+          # Get day of week (0=Sunday, 6=Saturday)
+          DOW=$(TZ='Asia/Ho_Chi_Minh' date +'%u')
+          
+          echo "current_date=$CURRENT_DATE" >> $GITHUB_OUTPUT
+          echo "year=$YEAR" >> $GITHUB_OUTPUT
+          echo "month=$MONTH" >> $GITHUB_OUTPUT
+          echo "day=$DAY" >> $GITHUB_OUTPUT
+          echo "dow=$DOW" >> $GITHUB_OUTPUT
+          
+          echo "Current date: $CURRENT_DATE"
+          echo "Year: $YEAR, Month: $MONTH, Day: $DAY, DOW: $DOW"
+      
+      - name: Generate report
+        run: |
+          MONTH=${{ steps.week.outputs.month }}
+          YEAR=${{ steps.week.outputs.year }}
+          echo "Generating report for month $MONTH year $YEAR..."
+          npx tsx scripts/report.ts $MONTH $YEAR
+      
+      - name: Find latest week report
+        id: report
+        run: |
+          # Find the most recent report file
+          LATEST_REPORT=$(ls -t reports/${{ steps.week.outputs.year }}-${{ steps.week.outputs.month }}/lms-report-week*.md 2>/dev/null | head -1)
+          
+          if [ -z "$LATEST_REPORT" ]; then
+            echo "No report found!"
+            exit 1
+          fi
+          
+          echo "Found report: $LATEST_REPORT"
+          echo "report_file=$LATEST_REPORT" >> $GITHUB_OUTPUT
+          
+          # Extract week number from filename
+          WEEK_NUM=$(basename "$LATEST_REPORT" | grep -oP 'week\K[0-9]+')
+          echo "week_num=$WEEK_NUM" >> $GITHUB_OUTPUT
+      
+      - name: Send report via email
+        env:
+          USER_EMAIL_GROUP: ${{ secrets.USER_EMAIL_GROUP }}
+          AZURE_CLIENT_ID_GROUP: ${{ secrets.AZURE_CLIENT_ID_GROUP }}
+          AZURE_TENANT_ID_GROUP: ${{ secrets.AZURE_TENANT_ID_GROUP }}
+        run: |
+          REPORT_FILE="${{ steps.report.outputs.report_file }}"
+          WEEK_NUM="${{ steps.report.outputs.week_num }}"
+          YEAR="${{ steps.week.outputs.year }}"
+          MONTH="${{ steps.week.outputs.month }}"
+          
+          echo "Sending report: $REPORT_FILE"
+          echo "Week: $WEEK_NUM"
+          
+          # Send to your email
+          npx tsx mail-cli/src/index.ts send-report \
+            -f "$REPORT_FILE" \
+            -t "${{ secrets.USER_EMAIL_GROUP }}" \
+            -subject "LMS Report - Week $WEEK_NUM ($MONTH/$YEAR)"
+      
+      - name: Upload report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lms-report-week${{ steps.report.outputs.week_num }}
+          path: ${{ steps.report.outputs.report_file }}
+          retention-days: 30
