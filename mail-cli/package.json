@@ -8,7 +8,6 @@
   },
   "dependencies": {
     "@azure/identity": "^4.13.0",
-    "@azure/identity-cache-persistence": "^1.2.0",
     "@microsoft/microsoft-graph-client": "^3.0.7",
     "commander": "^14.0.3",
     "dotenv": "^17.3.1"
