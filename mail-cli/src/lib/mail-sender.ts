@@ -1,4 +1,5 @@
 import { Client } from "@microsoft/microsoft-graph-client";
+import { getUserEmail } from "../authentication.js";
 
 type SendMailOptions = {
   to: string[];
@@ -9,9 +10,7 @@ type SendMailOptions = {
 };
 
 /**
- * Send an email via Microsoft Graph API
- * @param client - Microsoft Graph client
- * @param options - Email options (to, subject, htmlContent, cc, bcc)
+ * Send an email via Microsoft Graph API (Client Credentials - /users/{email}/sendMail)
  */
 export async function sendMail(
   client: Client,
@@ -23,6 +22,8 @@ export async function sendMail(
     throw new Error("At least one recipient is required.");
   }
 
+  const userEmail = getUserEmail();
+
   const message = {
     subject,
     body: {
@@ -40,54 +41,5 @@ export async function sendMail(
     })),
   };
 
-  await client.api("/me/sendMail").post({ message });
-}
-
-/**
- * Send an email with file attachment
- * @param client - Microsoft Graph client
- * @param options - Email options with attachment
- */
-export async function sendMailWithAttachment(
-  client: Client,
-  options: SendMailOptions & {
-    attachment: {
-      filename: string;
-      content: string; // Base64 encoded
-      contentType: string;
-    };
-  }
-): Promise<void> {
-  const { to, subject, htmlContent, cc, bcc, attachment } = options;
-
-  if (!to || to.length === 0) {
-    throw new Error("At least one recipient is required.");
-  }
-
-  const message = {
-    subject,
-    body: {
-      contentType: "HTML",
-      content: htmlContent,
-    },
-    toRecipients: to.map((email) => ({
-      emailAddress: { address: email },
-    })),
-    ccRecipients: cc?.map((email) => ({
-      emailAddress: { address: email },
-    })),
-    bccRecipients: bcc?.map((email) => ({
-      emailAddress: { address: email },
-    })),
-    attachments: [
-      {
-        "@odata.type": "#microsoft.graph.fileAttachment",
-        name: attachment.filename,
-        contentType: attachment.contentType,
-        contentBytes: attachment.content,
-      },
-    ],
-  };
-
-  await client.api("/me/sendMail").post({ message });
+  await client.api(`/users/${userEmail}/sendMail`).post({ message });
 }

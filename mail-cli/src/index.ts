@@ -1,10 +1,9 @@
-import { Client } from "@microsoft/microsoft-graph-client";
 import { Command } from "commander";
 
-import { authProvider, AUTH_RECORD_FILE } from "./authentication.js";
+import { getGraphClient } from "./authentication.js";
 import { register as registerSendReport } from "./commands/send-report.js";
 
-const client = Client.initWithMiddleware({ authProvider });
+const client = getGraphClient();
 
 // CLI setup
 const program = new Command();
